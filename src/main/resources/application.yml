@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  r2dbc:
+    username: postgres
+    password: 123
+    url: r2dbc:postgresql://localhost:5432/reactive_todo
+    driver: postgresql
+springdoc:
+  swagger-ui:
+    path: /ui
+  api-docs:
+    path: /api-docs
