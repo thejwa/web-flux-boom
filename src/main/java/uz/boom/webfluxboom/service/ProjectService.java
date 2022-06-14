@@ -28,18 +28,27 @@ public class ProjectService {
     }
     
     
-    public Mono<ProjectDto> get(Integer id) {
+    public Mono<ProjectDto> get(int id) {
         return repository.findById(id)
-                .switchIfEmpty(Mono.error(() -> {
-                    throw new RuntimeException("Project Not Found");
-                }))
+                .switchIfEmpty(Mono.error(new RuntimeException("Not Found")))
                 .map(mapper::toDto)
                 .zipWith(columnService.getByProjectId(id)
                         .collectList())
                 .doOnNext(tuple2 -> tuple2.getT1().setColumns(tuple2.getT2()))
                 .map(Tuple2::getT1);
-        
-        
+
+
+//        return repository.findById(id)
+//                .switchIfEmpty(Mono.error(() -> {
+//                    throw new RuntimeException("Project Not Found");
+//                }))
+//                .map(mapper::toDto)
+//                .zipWith(columnService.getByProjectId(id)
+//                        .collectList())
+//                .doOnNext(tuple2 -> tuple2.getT1().setColumns(tuple2.getT2()))
+//                .map(Tuple2::getT1);
+
+
 //        return columnService.getByProjectId(id)
 //                .collectList()
 //                .zipWith(repository.findById(id)

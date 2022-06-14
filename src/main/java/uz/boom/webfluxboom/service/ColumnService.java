@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
 import uz.boom.webfluxboom.dtos.column.ColumnDto;
 import uz.boom.webfluxboom.dtos.todo.TodoDto;
 import uz.boom.webfluxboom.mapper.ColumnMapper;
@@ -25,11 +26,23 @@ public class ColumnService {
         return repository.findByProjectId(projectId)
                 .flatMap(column -> Mono.just(column)
                         .map(mapper::toDto)
-                        .zipWith(todoService.getByColumnId(column.getId()).collectList())
+                        .zipWith(todoService.getByColumnId(column.getId())
+                                .collectList())
+                        .doOnNext(tuple2 -> tuple2.getT1().setTodos(tuple2.getT2()))
+                        .map(Tuple2::getT1)
                         .subscribeOn(Schedulers.parallel())
-                ).doOnNext(tuple2 -> tuple2.getT1().setTodos(tuple2.getT2()))
-                .flatMap(a -> Mono.just(a.getT1())
-                        .subscribeOn(Schedulers.parallel()));
+                
+                );
+
+
+//        return repository.findByProjectId(projectId)
+//                .flatMap(column -> Mono.just(column)
+//                        .map(mapper::toDto)
+//                        .zipWith(todoService.getByColumnId(column.getId()).collectList())
+//                        .subscribeOn(Schedulers.parallel())
+//                ).doOnNext(tuple2 -> tuple2.getT1().setTodos(tuple2.getT2()))
+//                .flatMap(a -> Mono.just(a.getT1())
+//                        .subscribeOn(Schedulers.parallel()));
         
     }
     
