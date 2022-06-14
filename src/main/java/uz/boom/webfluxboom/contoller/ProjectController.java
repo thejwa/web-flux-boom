@@ -8,8 +8,6 @@ import uz.boom.webfluxboom.dtos.project.ProjectDto;
 import uz.boom.webfluxboom.entity.Project;
 import uz.boom.webfluxboom.service.ProjectService;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 @RestController
 @RequestMapping("/project")
 @RequiredArgsConstructor
@@ -27,7 +25,7 @@ public class ProjectController {
     }
     
     @GetMapping("/{id}")
-    public Mono<ProjectDto> get(@PathVariable Integer id){
+    public Mono<ProjectDto> get(@PathVariable Integer id) {
         return service.get(id);
     }
     
